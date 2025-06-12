@@ -85,6 +85,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "phpunit": [
+            "vendor/bin/phpunit --coverage-html coverage-report"
         ]
     },
     "conflict": {
