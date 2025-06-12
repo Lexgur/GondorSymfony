@@ -6,7 +6,6 @@ namespace App\Tests;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryTest extends KernelTestCase
@@ -74,5 +73,15 @@ class UserRepositoryTest extends KernelTestCase
         $this->userRepository->remove($user);
 
         $this->assertNull($user->getId());
+    }
+
+    public function testIsolation(): void
+    {
+        $user = new User();
+        $user->setEmail('check@test.com');
+        $user->setPassword('test');
+        $this->userRepository->save($user);
+
+        $this->assertNotNull($user->getId());
     }
 }
