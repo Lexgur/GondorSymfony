@@ -6,6 +6,9 @@
     <div class="register-wrapper">
     <div class="form-container">
         <h1>REGISTER</h1>
+        {% for message in app.flashes('success') %}
+            <div class="success-message">{{ message }}</div>
+        {% endfor %}
         <form method="POST" action="/user/register">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>

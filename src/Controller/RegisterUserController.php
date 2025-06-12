@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Validation\UserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,13 @@ class RegisterUserController extends AbstractController
     private UserRepository $userRepository;
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository)
+    private UserValidator $validator;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, UserValidator $validator)
     {
         $this->passwordHasher = $passwordHasher;
         $this->userRepository = $userRepository;
+        $this->validator = $validator;
     }
 
     #[Route('/user/register', name: 'register')]
@@ -31,14 +35,17 @@ class RegisterUserController extends AbstractController
             $email = $request->request->get('email');
             $plainPassword = $request->request->get('password');
 
-            $user = new User();
-            $user->setEmail($email);
-            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
+            if ($this->validator->validateEmail($email) && $this->validator->validatePassword($plainPassword)) {
+                $user = new User();
+                $user->setEmail($email);
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
 
-            $this->userRepository->save($user);
+                $this->userRepository->save($user);
 
-            return $this->redirectToRoute('');
+                $this->addFlash('success', 'Registration complete');
+                return $this->redirectToRoute('register');
+            }
         }
         return $this->render('user/register.html.twig');
     }
