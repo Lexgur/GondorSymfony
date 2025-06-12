@@ -6,7 +6,6 @@ namespace App\Tests;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -14,9 +13,6 @@ class UserRepositoryTest extends KernelTestCase
 {
     private UserRepository $userRepository;
 
-    /**
-     * @throws Exception
-     */
     public function setUp(): void
     {
 
@@ -24,10 +20,7 @@ class UserRepositoryTest extends KernelTestCase
 
         $container = static::getContainer();
 
-        $connection = $container->get(Connection::class);
-
         $this->userRepository = $container->get(UserRepository::class);
-        $connection->executeStatement('DELETE from user');
     }
 
     public function testFindOneById(): void
