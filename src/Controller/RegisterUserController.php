@@ -32,18 +32,19 @@ class RegisterUserController extends AbstractController
     {
         if($request->getMethod() === 'POST') {
             $email = $request->request->get('email');
-            $plainPassword = $request->request->get('password');
+            $password = $request->request->get('password');
 
-            if ($this->validator->validateEmail($email) && $this->validator->validatePassword($plainPassword)) {
+            if ($this->validator->validateEmail($email) && $this->validator->validatePassword($password)) {
                 $user = new User();
                 $user->setEmail($email);
-                $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($hashedPassword);
+                $user->setPassword($this->passwordHasher->hashPassword($user, $password));
 
                 $this->userRepository->save($user);
 
                 $this->addFlash('success', 'Registration complete');
                 return $this->redirectToRoute('register');
+            } else {
+                $this->addFlash('error', 'Invalid email or password');
             }
         }
         return $this->render('user/register.html.twig');

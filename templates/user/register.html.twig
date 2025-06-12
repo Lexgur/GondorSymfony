@@ -9,6 +9,9 @@
         {% for message in app.flashes('success') %}
             <div class="success-message">{{ message }}</div>
         {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="error-message">{{ message }}</div>
+        {% endfor %}
         <form method="POST" action="/user/register">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>

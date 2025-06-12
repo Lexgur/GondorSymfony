@@ -36,4 +36,19 @@ class RegisterUserControllerTest extends WebTestCase
 
         $this->assertSelectorTextContains('.success-message', 'Registration complete');
     }
+
+    public function testBadValuesShowErrorOnRegistrationPage(): void
+    {
+        $client = static::createClient();
+
+        $badEmail = 'test.test';
+        $password = 'test';
+
+        $client->request('POST', '/user/register', [
+            'email' => $badEmail,
+            'password' => $password,
+        ]);
+
+        $this->assertSelectorTextContains('.error-message', 'Invalid email or password');
+    }
 }
