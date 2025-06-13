@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+        <div class="welcome-message">
+            You are already logged in as {{ app.user.userIdentifier }}.
+            <a class="quest-link" href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+    <div class="dashboard-container">
+        <header class="welcome-message">
+            <h1>{{ message }}</h1>
+        </header>
+    <div class="blockquote-footer">
+        <div class="blockquote">
+                “Moonlight drowns out all but the brightest stars.” - J. R. R. Tolkien
+        </div>
+    </div>
+        <button class="quest-button" onclick="window.location.href='';">Begin Questing</button>
+        <div class="horse-container">
+            <div class="horse"></div>
+        </div>
+    </div>
+{% endblock %}
