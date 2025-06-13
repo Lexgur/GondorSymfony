@@ -4,7 +4,7 @@
 
 {% block body %}
     {% if app.user %}
-        <div class="welcome-message">
+        <div class="user-message">
             You are already logged in as {{ app.user.userIdentifier }}.
             <a class="quest-link" href="{{ path('app_logout') }}">Logout</a>
         </div>
