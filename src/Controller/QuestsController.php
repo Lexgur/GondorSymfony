@@ -42,6 +42,7 @@ final class QuestsController extends AbstractController
             'controller_name' => 'QuestsController',
             'message' => 'List of completed quests, Gondorian:',
             'challenges' => $completedQuests,
+            'quest' => '/quest/start',
         ]);
     }
 }

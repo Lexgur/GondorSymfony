@@ -19,6 +19,7 @@ final class WeaklingController extends AbstractController
 
         return $this->render('user/weakling.html.twig', [
             'message' => 'You have not completed a single quest? I know a man in white robes, that would be disappointed',
+            'quest' => '/quest/start',
         ]);
     }
 }
