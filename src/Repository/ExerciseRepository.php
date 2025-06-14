@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Exercise;
+use App\Entity\MuscleGroup;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,5 +39,14 @@ class ExerciseRepository extends ServiceEntityRepository
     public function findAllByChallengeId($challengeId): ?array
     {
         return $this->findAll(['challenge_id' => $challengeId]);
+    }
+
+    public function fetchByMuscleGroup(MuscleGroup $group): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.muscleGroup = :muscle_group')
+            ->setParameter('muscle_group', $group)
+            ->getQuery()
+            ->getResult();
     }
 }
