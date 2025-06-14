@@ -25,9 +25,7 @@ class DashboardController extends AbstractController
     #[Route('/user/dashboard', name: 'app_dashboard')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
-        if (!$authenticationUtils->getLastUsername()) {
-            throw new AuthenticationException('You must be logged in to view this');
-        }
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $userChallenges = $this->challengeRepository->findAllChallenges();
         $completedChallenges = count($userChallenges);

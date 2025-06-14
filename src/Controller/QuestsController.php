@@ -21,9 +21,7 @@ final class QuestsController extends AbstractController
     #[Route('/user/quests', name: 'app_quests')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
-        if (!$authenticationUtils->getLastUsername()) {
-            throw new AuthenticationException('You must be logged in to view this');
-        }
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $completedChallenges = $this->challengeRepository->findAllChallenges();
         $completedQuests = [];

@@ -33,7 +33,7 @@ class CreateChallengeController extends AbstractController
     /**
      * @throws RandomException
      */
-    #[Route('/quest/start')]
+    #[Route('/quest/start', name: 'quest_start')]
     public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
         if (!$authenticationUtils->getLastUsername()) {
