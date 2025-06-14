@@ -12,10 +12,6 @@ class Exercise
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $challengeId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -25,6 +21,23 @@ class Exercise
     #[ORM\Column(enumType: MuscleGroup::class)]
     private ?MuscleGroup $muscleGroup = null;
 
+    #[ORM\ManyToOne(targetEntity: Challenge::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Challenge $challenge = null;
+
+    public function getChallenge(): ?Challenge
+    {
+        return $this->challenge;
+    }
+
+    public function setChallenge(?Challenge $challenge): static
+    {
+        $this->challenge = $challenge;
+
+        return $this;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -33,18 +46,6 @@ class Exercise
     public function setId(int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getChallengeId(): ?int
-    {
-        return $this->challengeId;
-    }
-
-    public function setChallengeId(?int $challengeId): static
-    {
-        $this->challengeId = $challengeId;
 
         return $this;
     }
