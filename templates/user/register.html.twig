@@ -3,7 +3,6 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <div class="register-wrapper">
     <div class="form-container">
         <h1>REGISTER</h1>
         {% for message in app.flashes('success') %}
@@ -19,6 +18,5 @@
             <input type="password" id="password" name="password" required>
             <button type="submit">REGISTER</button>
         </form>
-    </div>
     </div>
 {% endblock %}
