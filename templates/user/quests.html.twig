@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Quests{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <header class="welcome-message">
+            <h2>{{ message }}</h2>
+        </header>
+
+        {% if challenges is not empty %}
+            <table class="quest-table">
+                <thead>
+                <tr>
+                    <th>Quest</th>
+                    <th>Started At</th>
+                    <th>Completed At</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for challenge in challenges %}
+                    <tr>
+                        <td>Quest #{{ loop.index }}</td>
+                        <td>{{ challenge.started_at }}</td>
+                        <td>{{ challenge.completed_at }}</td>
+                        <td>
+                            <div class="button-cell">
+                                <a href="/daily-quest/{{ challenge.id }}" class="quest-link">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No completed quests yet.</p>
+        {% endif %}
+        <button class="quest-button" onclick="window.location.href='';">Start your daily quest</button>
+    </div>
+{% endblock %}
