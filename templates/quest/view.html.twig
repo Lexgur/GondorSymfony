@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Challenge Details{% endblock %}
+
+{% block body %}
+    <div class="challenge-view">
+        <p>Started At: {{ challenge.startedAt|date('Y-m-d H:i') }}</p>
+
+            <p>✅ Completed At: {{ challenge.completedAt|date('Y-m-d H:i') }}</p>
+            <p class="success-message">You have completed all the exercises! Great job, Gondorian!</p>
+
+        <div class="link-group">
+            <a href="{{ path('app_quests') }}" class="quest-link">Back</a>
+            <a href="{{ path('quest_start') }}" class="quest-link">Try Again</a>
+
+        </div>
+    </div>
+{% endblock %}

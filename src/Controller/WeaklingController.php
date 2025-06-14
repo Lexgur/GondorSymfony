@@ -13,9 +13,7 @@ final class WeaklingController extends AbstractController
     #[Route('/user/weakling', name: 'app_weakling')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
-        if (!$authenticationUtils->getLastUsername()) {
-            throw new AuthenticationException('You must be logged in to view this');
-        }
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         return $this->render('user/weakling.html.twig', [
             'message' => 'You have not completed a single quest? I know a man in white robes, that would be disappointed',
