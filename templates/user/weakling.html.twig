@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Weakling{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <header class="welcome-message">
+            <h1>{{ message }}</h1>
+        </header>
+        <button class="quest-button" onclick="window.location.href='';">Start your first quest</button>
+    </div>
+{% endblock %}
