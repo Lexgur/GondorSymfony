@@ -109,8 +109,7 @@ input[type="password"],
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
-.user-message, a {
-    margin-top: -150px;
+.user-message {
     text-decoration: none;
     top: -100px;
     display: inline-block;
@@ -147,6 +146,10 @@ button:hover,
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+}
+
+.quest-button {
+    width: 50%;
 }
 
 .quest-table th,
