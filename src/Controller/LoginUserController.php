@@ -14,9 +14,7 @@ class LoginUserController extends AbstractController
     #[Route(path: '/user/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getAccessDecision(true)) {
-            return $this->redirectToRoute('app_dashboard');
-        }
+
 
         $error = $authenticationUtils->getLastAuthenticationError();
 

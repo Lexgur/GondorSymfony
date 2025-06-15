@@ -26,10 +26,25 @@ class ViewChallengeController extends AbstractController
 
         $challenge = $this->challengeRepository->findOneById($id);
 
+        if (!$challenge) {
+            throw $this->createNotFoundException('Challenge not found');
+        }
+
+        $allCompleted = true;
+        foreach ($challenge->getChallengeExercises() as $exercise) {
+            if (!$exercise->isCompleted()) {
+                $allCompleted = false;
+                break;
+            }
+        }
+
+        if ($allCompleted && !$challenge->getCompletedAt()) {
+            $challenge->setCompletedAt(new \DateTimeImmutable());
+            $this->challengeRepository->save($challenge);
+        }
 
         return $this->render('quest/view.html.twig', [
             'challenge' => $challenge,
         ]);
     }
-
 }

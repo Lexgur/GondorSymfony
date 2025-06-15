@@ -6,13 +6,40 @@
     <div class="challenge-view">
         <p>Started At: {{ challenge.startedAt|date('Y-m-d H:i') }}</p>
 
+        {% if challenge.completedAt %}
             <p>✅ Completed At: {{ challenge.completedAt|date('Y-m-d H:i') }}</p>
             <p class="success-message">You have completed all the exercises! Great job, Gondorian!</p>
+        {% endif %}
+
+        {% if challenge.challengeExercises|length > 0 %}
+            <ul class="todo-list">
+                {% for exercise in challenge.challengeExercises %}
+                    <li>
+                        <span class="exercise-label">
+                            {{ exercise.exercise.name() }} –
+                            <p class="exercise-description">{{ exercise.exercise.getDescription() }}</p>
+                        </span>
+
+                        <label class="toggle-switch">
+                            <input
+                                type="checkbox"
+                                class="exercise-checkbox"
+                                id="exercise-{{ loop.index }}"
+                                {% if exercise.completed %}checked{% endif %}
+                                disabled
+                            >
+                            <span class="slider"></span>
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No exercises in this challenge.</p>
+        {% endif %}
 
         <div class="link-group">
             <a href="{{ path('app_quests') }}" class="quest-link">Back</a>
             <a href="{{ path('quest_start') }}" class="quest-link">Try Again</a>
-
         </div>
     </div>
 {% endblock %}
