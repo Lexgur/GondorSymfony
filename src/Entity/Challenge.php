@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChallengeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChallengeRepository::class)]
@@ -23,15 +25,12 @@ class Challenge
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
+    #[ORM\OneToMany(targetEntity: ChallengeExercise::class, mappedBy: "challenge", cascade: ["persist", "remove"])]
+    private Collection $challengeExercises;
 
-    public function setUser(User $user): static
+    public function __construct()
     {
-        $this->user = $user;
-        return $this;
+        $this->challengeExercises = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -42,7 +41,6 @@ class Challenge
     public function setId(int $id): static
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -54,7 +52,6 @@ class Challenge
     public function setStartedAt(\DateTimeImmutable $startedAt): static
     {
         $this->startedAt = $startedAt;
-
         return $this;
     }
 
@@ -66,7 +63,40 @@ class Challenge
     public function setCompletedAt(?\DateTimeImmutable $completedAt): static
     {
         $this->completedAt = $completedAt;
+        return $this;
+    }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function addChallengeExercise(ChallengeExercise $exercise): static
+    {
+        if (!$this->challengeExercises->contains($exercise)) {
+            $this->challengeExercises[] = $exercise;
+            $exercise->setChallenge($this);
+        }
+        return $this;
+    }
+
+    public function getChallengeExercises(): Collection
+    {
+        return $this->challengeExercises;
+    }
+
+    public function removeChallengeExercise(ChallengeExercise $exercise): static
+    {
+        if ($this->challengeExercises->contains($exercise)) {
+            $this->challengeExercises->removeElement($exercise);
+
+        }
         return $this;
     }
 }

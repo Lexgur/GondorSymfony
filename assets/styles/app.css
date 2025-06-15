@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap');
 
 /* Global layout & background */
-body,
-.register-wrapper {
+body{
     font-family: 'Cinzel', serif;
+    flex-direction: column;
     color: #ffffff;
     max-width: 700px;
     margin: 0 auto;
@@ -280,5 +280,47 @@ ul.todo-list li {
     background: linear-gradient(135deg, #0b0d12, #212c3e, #f5f5f5);
     color: #a1a0a0;
     transition: all 0.9s ease;
+}
+
+/* Sticky Top Navbar */
+.navbar {
+    position: fixed;
+    margin-top: -56rem;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center; /* Center the navbar contents horizontally */
+    align-items: center;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #0b0d12, #212c3e, #f5f5f5);
+    color: #fff;
+    font-family: 'Cinzel', serif;
+}
+
+/* Optional: If you want the links and user info inside to still be spaced */
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* or your layout width */
+}
+
+
+/* Navbar links */
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.nav-user {
+    margin-right: 1rem;
+    font-weight: bold;
 }
 

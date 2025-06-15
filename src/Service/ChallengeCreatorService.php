@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Challenge;
+use App\Entity\ChallengeExercise;
 use App\Entity\User;
 use App\Exception\NotEnoughExercisesException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,16 +28,17 @@ readonly class ChallengeCreatorService
         // Fetch random exercises
         $exercises = $this->fetcher->fetchRandomExercise($muscleGroupRotation);
 
-        // Assign Challenge entity to each Exercise entity
         foreach ($exercises as $exercise) {
-            $exercise->setChallenge($challenge);
-            $this->entityManager->persist($exercise);
+            $challengeExercise = new ChallengeExercise();
+            $challengeExercise->setChallenge($challenge);
+            $challengeExercise->setExercise($exercise);
+            $challengeExercise->setCompleted(false);
+            $challenge->addChallengeExercise($challengeExercise);
         }
-
-        $this->entityManager->flush();
 
         return $challenge;
     }
+
 
     /**
      * @throws RandomException

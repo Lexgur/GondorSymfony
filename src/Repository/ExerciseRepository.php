@@ -49,4 +49,14 @@ class ExerciseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllByIds(array $ids): array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\ChallengeExercise;
 use App\Repository\ChallengeRepository;
+use App\Repository\ExerciseRepository;
 use App\Repository\UserRepository;
 use App\Service\ChallengeCreatorService;
 use Random\RandomException;
@@ -18,16 +20,21 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class CreateChallengeController extends AbstractController
 {
     private ChallengeCreatorService $challengeCreator;
-
     private ChallengeRepository $challengeRepository;
-
     private UserRepository $userRepository;
+    private ExerciseRepository $exerciseRepository;
 
-    public function __construct(ChallengeCreatorService $challengeCreator, ChallengeRepository $challengeRepository, UserRepository $userRepository)
+    public function __construct(
+        ChallengeCreatorService $challengeCreator,
+        ChallengeRepository     $challengeRepository,
+        UserRepository          $userRepository,
+        ExerciseRepository      $exerciseRepository
+    )
     {
         $this->challengeCreator = $challengeCreator;
         $this->challengeRepository = $challengeRepository;
         $this->userRepository = $userRepository;
+        $this->exerciseRepository = $exerciseRepository;
     }
 
     /**
@@ -39,17 +46,55 @@ class CreateChallengeController extends AbstractController
         if (!$authenticationUtils->getLastUsername()) {
             throw new AuthenticationException('You must be logged in to view this');
         }
-        $exercises = [];
 
-        if ($request->getMethod() === 'POST') {
+        $session = $request->getSession();
+
+        if ($request->isMethod('POST')) {
             $user = $this->userRepository->findOneByEmail($authenticationUtils->getLastUsername());
+
+            $submittedExerciseIds = array_filter(
+                $request->request->all('exercise_ids'),
+                fn($id) => (int)$id > 0
+            );
+
+            $originalExerciseIds = $session->get('challenge_exercise_ids', []);
+            $allExercises = $this->exerciseRepository->findAllByIds($originalExerciseIds);
+
             $challenge = $this->challengeCreator->createChallenge($user);
+
+            foreach ($challenge->getChallengeExercises() as $existingExercise) {
+                $challenge->removeChallengeExercise($existingExercise);
+            }
+
+            foreach ($allExercises as $exercise) {
+                $challengeExercise = new ChallengeExercise();
+                $challengeExercise->setChallenge($challenge);
+                $challengeExercise->setExercise($exercise);
+                $challengeExercise->setCompleted(in_array($exercise->getId(), $submittedExerciseIds));
+
+                $challenge->addChallengeExercise($challengeExercise);
+            }
+
+            $challenge->setStartedAt(new \DateTimeImmutable());
             $challenge->setCompletedAt(new \DateTimeImmutable());
+
             $this->challengeRepository->save($challenge);
+
+            $session->remove('challenge_exercise_ids');
+
             return $this->redirectToRoute('app_quests');
-        } else {
-            $exercises = $this->challengeCreator->fetchExercisesForChallenge();
         }
+
+
+
+        if (!$session->has('challenge_exercise_ids')) {
+            $exercises = $this->challengeCreator->fetchExercisesForChallenge();
+            $session->set('challenge_exercise_ids', array_map(fn($e) => $e->getId(), $exercises));
+        } else {
+            $exerciseIds = $session->get('challenge_exercise_ids');
+            $exercises = $this->exerciseRepository->findAllByIds($exerciseIds);
+        }
+
         return $this->render('quest/start.html.twig', [
             'exercises' => $exercises,
         ]);

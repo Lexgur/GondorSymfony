@@ -6,7 +6,6 @@ use App\Repository\ChallengeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class QuestsController extends AbstractController
@@ -19,7 +18,7 @@ final class QuestsController extends AbstractController
         $this->challengeRepository = $challengeRepository;
     }
     #[Route('/user/quests', name: 'app_quests')]
-    public function index(AuthenticationUtils $authenticationUtils): Response
+    public function index(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 

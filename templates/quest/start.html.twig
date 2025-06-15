@@ -3,54 +3,40 @@
 {% block title %}Quest Started!{% endblock %}
 
 {% block body %}
-    {% if app.user %}
-        <div class="user-message">
-            You are already logged in as {{ app.user.userIdentifier }}.
-            <a class="quest-link" href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
     <div class="form-container">
         <p>Let's begin, Gondorian!</p>
 
-        {% if exercises is not empty %}
-            <ul class="todo-list">
-                {% for exercise in exercises %}
-                    <li>
-                        <span class="exercise-label">
-                            {{ exercise.getName() }} –
-                            <p class="exercise-description">{{ exercise.getDescription() }}</p>
-                        </span>
+        <form method="POST" action="{{ path('quest_start') }}" id="challenge-form">
+            {% if exercises is not empty %}
+                <ul class="todo-list">
+                    {% for exercise in exercises %}
+                        <li>
+                            <span class="exercise-label">
+                                {{ exercise.getName() }} –
+                                <p class="exercise-description">{{ exercise.getDescription() }}</p>
+                            </span>
 
-                        <label class="toggle-switch">
-                            <input type="checkbox" class="exercise-checkbox" id="exercise-{{ loop.index }}">
-                            <span class="slider"></span>
-                        </label>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No exercises loaded.</p>
-        {% endif %}
+                            {# Hidden field ensures that unchecked boxes still submit (value = 0) #}
+                            <input type="hidden" name="exercise_ids[{{ loop.index0 }}]" value="0">
 
-        <form method="POST" action="/quest/start" id="challenge-form">
-            <button type="submit" value="challenge-complete" name="action" id="submit-btn" disabled>MARK AS DONE</button>
+                            <label class="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    class="exercise-checkbox"
+                                    id="exercise-{{ loop.index }}"
+                                    name="exercise_ids[{{ loop.index0 }}]"
+                                    value="{{ exercise.id }}"
+                                >
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No exercises loaded.</p>
+            {% endif %}
+
+            <button type="submit" value="challenge-complete" name="action" id="submit-btn">MARK AS DONE</button>
         </form>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const checkboxes = document.querySelectorAll('.exercise-checkbox');
-            const submitBtn = document.getElementById('submit-btn');
-
-            function updateButtonState() {
-                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                submitBtn.disabled = !allChecked;
-            }
-
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', updateButtonState);
-            });
-            updateButtonState();
-        });
-    </script>
 {% endblock %}
