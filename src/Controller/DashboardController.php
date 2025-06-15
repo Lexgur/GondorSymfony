@@ -35,7 +35,7 @@ class DashboardController extends AbstractController
             'begin' => $this->handleRedirect($completedChallenges),
         ]);
     }
-    private function handleRedirect(int $completedChallenges): string
+    public function handleRedirect(int $completedChallenges): string
     {
         if (0 === $completedChallenges) {
             return '/user/weakling';

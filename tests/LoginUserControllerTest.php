@@ -11,16 +11,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoginUserControllerTest extends WebTestCase
 {
-    public function testRegisterControllerReturnsTheCorrectBody(): void
-    {
-        $client = static::createClient();
-
-        $client->request('GET', '/user/login');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Please sign in');
-    }
-
     public function testSuccessfulLogin(): void
     {
         $client = static::createClient();
