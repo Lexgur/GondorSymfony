@@ -3,13 +3,6 @@
 {% block title %}Quest Started!{% endblock %}
 
 {% block body %}
-    {% if app.user %}
-        <div class="user-message">
-            You are already logged in as {{ app.user.userIdentifier }}.
-            <a class="quest-link" href="{{ path('app_logout') }}">Logout</a>
-        </div>
-    {% endif %}
-
     <div class="form-container">
         <p>Let's begin, Gondorian!</p>
 

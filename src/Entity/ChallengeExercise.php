@@ -13,17 +13,15 @@ class ChallengeExercise
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Challenge::class, inversedBy: "challengeExercises")]
-    #[ORM\JoinColumn(nullable: false)]
-    private Challenge $challenge;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Challenge $challenge = null;
 
     #[ORM\ManyToOne(targetEntity: Exercise::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private Exercise $exercise;
+    private ?Exercise $exercise = null;
 
     #[ORM\Column(type: "boolean")]
     private bool $completed = false;
-
-    // getters and setters...
 
     public function isCompleted(): bool
     {

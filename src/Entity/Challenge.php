@@ -26,7 +26,7 @@ class Challenge
     private ?User $user = null;
 
     #[ORM\OneToMany(targetEntity: ChallengeExercise::class, mappedBy: "challenge", cascade: ["persist", "remove"])]
-    public Collection $challengeExercises;
+    private Collection $challengeExercises;
 
     public function __construct()
     {
@@ -77,11 +77,6 @@ class Challenge
         return $this;
     }
 
-    public function getChallengeExercises(): Collection
-    {
-        return $this->challengeExercises;
-    }
-
     public function addChallengeExercise(ChallengeExercise $exercise): static
     {
         if (!$this->challengeExercises->contains($exercise)) {
@@ -91,12 +86,16 @@ class Challenge
         return $this;
     }
 
+    public function getChallengeExercises(): Collection
+    {
+        return $this->challengeExercises;
+    }
+
     public function removeChallengeExercise(ChallengeExercise $exercise): static
     {
-        if ($this->challengeExercises->removeElement($exercise)) {
-            if ($exercise->getChallenge() === $this) {
-                $exercise->setChallenge(null);
-            }
+        if ($this->challengeExercises->contains($exercise)) {
+            $this->challengeExercises->removeElement($exercise);
+
         }
         return $this;
     }

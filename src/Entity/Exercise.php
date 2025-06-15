@@ -21,23 +21,6 @@ class Exercise
     #[ORM\Column(enumType: MuscleGroup::class)]
     private ?MuscleGroup $muscleGroup = null;
 
-    #[ORM\ManyToOne(targetEntity: Challenge::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Challenge $challenge = null;
-
-    public function getChallenge(): ?Challenge
-    {
-        return $this->challenge;
-    }
-
-    public function setChallenge(?Challenge $challenge): static
-    {
-        $this->challenge = $challenge;
-
-        return $this;
-    }
-
-
     public function getId(): ?int
     {
         return $this->id;
