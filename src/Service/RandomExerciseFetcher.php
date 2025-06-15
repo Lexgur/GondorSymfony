@@ -43,7 +43,6 @@ class RandomExerciseFetcher
         return $next;
     }
 
-
     /**
      * @return array<null|Exercise>
      *
