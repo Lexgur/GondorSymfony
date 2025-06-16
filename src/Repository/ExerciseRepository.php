@@ -36,11 +36,6 @@ class ExerciseRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function findAllByChallengeId($challengeId): ?array
-    {
-        return $this->findAll(['challenge_id' => $challengeId]);
-    }
-
     public function fetchByMuscleGroup(MuscleGroup $group): array
     {
         return $this->createQueryBuilder('e')
