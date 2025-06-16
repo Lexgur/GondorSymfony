@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use App\Entity\Challenge;
 use App\Entity\User;
-use App\Repository\ChallengeRepository;
+use App\Service\ChallengeCreatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -20,18 +19,18 @@ class QuestsControllerTest extends WebTestCase
     public function testCompletedChallengesAreRendered(): void
     {
         $client = static::createClient();
+        $container = static::getContainer();
 
-        $mockChallenge = $this->createMock(Challenge::class);
-        $mockChallenge->method('getId')->willReturn(42);
-        $mockChallenge->method('getStartedAt')->willReturn(new \DateTimeImmutable('2025-01-01 10:00'));
-        $mockChallenge->method('getCompletedAt')->willReturn(new \DateTimeImmutable('2025-01-01 12:00'));
+        $user = $this->createTestUser();
 
-        $mockRepo = $this->createMock(ChallengeRepository::class);
-        $mockRepo->method('findAllChallenges')->willReturn([$mockChallenge]);
+        $challengeCreator = $container->get(ChallengeCreatorService::class);
+        $challenge = $challengeCreator->createChallengeForUser($user);
+        $challenge->setStartedAt(new \DateTimeImmutable('2025-01-01 10:00'));
+        $challenge->setCompletedAt(new \DateTimeImmutable('2025-01-01 12:00'));
 
-        static::getContainer()->set(ChallengeRepository::class, $mockRepo);
-
-        $this->createTestUser();
+        $em = $container->get(EntityManagerInterface::class);
+        $em->persist($challenge);
+        $em->flush();
 
         $crawler = $client->request('GET', '/user/login');
         $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
@@ -42,13 +41,16 @@ class QuestsControllerTest extends WebTestCase
             '_csrf_token' => $csrfToken,
         ]);
 
+        $this->assertResponseRedirects();
         $client->followRedirect();
-        $client->request('GET', '/user/quests');
+
+        $crawler = $client->request('GET', '/user/quests');
 
         $this->assertSelectorTextContains('h2', 'List of completed quests, Gondorian:');
+        $this->assertSelectorTextContains('td', 'Quest #1');
     }
 
-    private function createTestUser(): void
+    private function createTestUser(): User
     {
         $container = static::getContainer();
 
@@ -62,5 +64,7 @@ class QuestsControllerTest extends WebTestCase
         $em = $container->get(EntityManagerInterface::class);
         $em->persist($user);
         $em->flush();
+
+        return $user;
     }
 }
