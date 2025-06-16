@@ -39,7 +39,7 @@ class ViewChallengeController extends AbstractController
             }
         }
 
-        // Auto-complete if all are done
+
         if ($completedCount === $totalCount && !$challenge->getCompletedAt()) {
             $challenge->setCompletedAt(new \DateTimeImmutable());
             $this->challengeRepository->save($challenge);
