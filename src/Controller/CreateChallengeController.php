@@ -43,10 +43,6 @@ class CreateChallengeController extends AbstractController
     #[Route('/quest/start', name: 'quest_start')]
     public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        if (!$authenticationUtils->getLastUsername()) {
-            throw new AuthenticationException('You must be logged in to view this');
-        }
-
         $session = $request->getSession();
 
         if ($request->isMethod('POST')) {
