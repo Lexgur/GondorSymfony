@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ChallengeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -18,11 +19,12 @@ final class QuestsController extends AbstractController
         $this->challengeRepository = $challengeRepository;
     }
     #[Route('/user/quests', name: 'app_quests')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $completedChallenges = $this->challengeRepository->findAllChallenges();
+        $user = $request->getSession()->get('user.id');
+        $completedChallenges = $this->challengeRepository->findAllChallengesForUser($user);
         $completedQuests = [];
 
         foreach ($completedChallenges as $completedChallenge) {

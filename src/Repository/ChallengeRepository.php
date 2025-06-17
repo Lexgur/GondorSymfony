@@ -35,8 +35,12 @@ class ChallengeRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function findAllChallenges(): array
+    public function findAllChallengesForUser($userId): array
     {
-        return $this->findAll();
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
     }
 }
