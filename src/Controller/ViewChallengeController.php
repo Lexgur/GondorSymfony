@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\ChallengeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,14 +21,20 @@ class ViewChallengeController extends AbstractController
     }
 
     #[Route('/quest/view/{id}', name: 'quest_view')]
-    public function index(int $id): Response
+    public function index(int $id, Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $challenge = $this->challengeRepository->findOneById($id);
 
         if (!$challenge) {
-            throw $this->createNotFoundException('Challenge not found');
+            throw $this->createNotFoundException('Challenge not found.');
+        }
+
+        $user = $this->getUser();
+
+        if ($user !== $challenge->getUser()) {
+            throw  $this->createAccessDeniedException('You do not have the right to view this.');
         }
 
         $completedCount = 0;
