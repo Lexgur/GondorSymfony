@@ -49,7 +49,7 @@ class ViewChallengeControllerTest extends WebTestCase
 
     public function testViewChallengeCountsCompletedExercises(): void
     {
-        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises, allCompleted: false);
+        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises);
 
         $this->loginUser();
         $this->client->followRedirect();
@@ -71,7 +71,7 @@ class ViewChallengeControllerTest extends WebTestCase
     public function testViewChallengeShowsChallengeAndExercises(): void
     {
         // Create challenge with none completed
-        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises, allCompleted: false);
+        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises);
 
         $this->loginUser();
         $this->client->followRedirect();
@@ -86,10 +86,40 @@ class ViewChallengeControllerTest extends WebTestCase
         }
     }
 
+    public function testNonOwnerUserIsDeniedAccess(): void
+    {
+        $ownerUser = $this->testUser;
+
+        $otherUser = new User();
+        $otherUser->setEmail('other@example.com');
+
+        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+        $otherUser->setPassword($hasher->hashPassword($otherUser, 'otherpass'));
+        $otherUser->setRoles(['ROLE_USER']);
+
+        $this->em->persist($otherUser);
+        $this->em->flush();
+
+        $challenge = $this->createChallengeWithExercises($ownerUser, $this->testExercises);
+
+        $crawler = $this->client->request('GET', '/user/login');
+        $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+
+        $this->client->submitForm('Sign in', [
+            '_username' => 'other@example.com',
+            '_password' => 'otherpass',
+            '_csrf_token' => $csrfToken,
+        ]);
+
+        $this->client->followRedirect();
+        $this->client->request('GET', '/quest/view/' . $challenge->getId());
+
+        $this->assertResponseStatusCodeSame(403);
+    }
+
     public function testChallengeIsMarkedCompletedWhenAllExercisesDone(): void
     {
-        // Create challenge with all exercises completed and no completedAt yet
-        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises, allCompleted: true, completedAt: null);
+        $challenge = $this->createChallengeWithExercises($this->testUser, $this->testExercises, allCompleted: true);
 
         $this->loginUser();
         $this->client->followRedirect();

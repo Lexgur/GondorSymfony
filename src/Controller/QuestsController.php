@@ -23,7 +23,7 @@ final class QuestsController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $user = $request->getSession()->get('user.id');
+        $user = $this->getUser();
         $completedChallenges = $this->challengeRepository->findAllChallengesForUser($user);
         $completedQuests = [];
 

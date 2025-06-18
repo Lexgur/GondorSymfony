@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ChallengeRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +24,10 @@ class DashboardController extends AbstractController
 
 
     #[Route('/user/dashboard', name: 'app_dashboard')]
-    public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
+    public function index(AuthenticationUtils $authenticationUtils): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $request->getSession()->get('user.id');
+        $user = $this->getUser();
         $userChallenges = $this->challengeRepository->findAllChallengesForUser($user);
         $completedChallenges = count($userChallenges);
 

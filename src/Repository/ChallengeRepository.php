@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Challenge;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Challenge>
@@ -35,11 +36,11 @@ class ChallengeRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function findAllChallengesForUser($userId): array
+    public function findAllChallengesForUser(UserInterface $user): array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.user = :userId')
-            ->setParameter('userId', $userId)
+            ->andWhere('c.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
