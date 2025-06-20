@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap');
 
 /* Global layout & background */
-body{
+body {
     font-family: 'Cinzel', serif;
     flex-direction: column;
     color: #ffffff;
@@ -114,6 +114,7 @@ input[type="password"],
     top: -100px;
     display: inline-block;
 }
+
 /* Buttons */
 button,
 .form-container button {
@@ -149,7 +150,23 @@ button:hover,
 }
 
 .quest-button {
-    width: 50%;
+    font-family: 'Cinzel', serif;
+    text-decoration: none;
+    width: fit-content;
+    margin-top: 3rem;
+    margin-left: 33%;
+    background: linear-gradient(135deg, #0b0d12, #2a3a4f, #d3d3d3);
+    color: #ffffff;
+    border: none;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    align-content: center;
+    align-items: center;
+    display: block;
 }
 
 .quest-table th,
@@ -259,7 +276,7 @@ ul.todo-list li {
     background-color: #45a049;
 }
 
-/* Quest link and button (if not already defined) */
+/* Quest link and button */
 .quest-link {
     display: inline-block;
     font-family: 'Cinzel', serif;
@@ -282,45 +299,51 @@ ul.todo-list li {
     transition: all 0.9s ease;
 }
 
-/* Sticky Top Navbar */
+/* Modern Fixed Navbar */
 .navbar {
     position: fixed;
-    margin-top: -56rem;
+    top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
     display: flex;
-    justify-content: center; /* Center the navbar contents horizontally */
+    justify-content: center;
     align-items: center;
-    padding: 1rem 2rem;
-    background: linear-gradient(135deg, #0b0d12, #212c3e, #f5f5f5);
-    color: #fff;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(90deg, rgba(11, 13, 18, 0.95), rgba(33, 44, 62, 0.95));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
     font-family: 'Cinzel', serif;
+    transition: background 0.3s ease;
 }
 
-/* Optional: If you want the links and user info inside to still be spaced */
+/* Navbar content */
 .navbar-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px; /* or your layout width */
+    max-width: 1200px;
 }
-
 
 /* Navbar links */
 .navbar a {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
-    margin-left: 1rem;
+    margin: 0 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 .navbar a:hover {
-    text-decoration: underline;
+    color: #d3d3d3;
+    text-decoration: none;
 }
 
 .nav-user {
-    margin-right: 1rem;
+    margin-right: 1.2rem;
     font-weight: bold;
+    color: #ffffff;
+    font-size: 1rem;
 }
-
