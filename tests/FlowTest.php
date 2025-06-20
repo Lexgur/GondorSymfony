@@ -15,37 +15,47 @@ class FlowTest extends PantherTestCase
     /**
      * @throws Exception
      */
-    public function testUserCanRegister(): void
+    public function generateUser(): array
     {
         $client = static::createPantherClient();
+
+        $email = 'test' . uniqid() . '@example.com';
+        $password = 'test123';
 
         $crawler = $client->request('GET', '/user/register');
 
         $form = $crawler->selectButton('REGISTER')->form([
-            'email' => 'testuser@example.com',
-            'password' => 'SecurePass123',
+            'email' => $email,
+            'password' => $password,
         ]);
         $client->submit($form);
 
         $client->waitFor('.success-message');
-
         $this->assertSelectorTextContains('.success-message', 'Registration complete');
+
+        return ['email' => $email, 'password' => $password];
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function testUserCanLogin(): void
     {
         $client = static::createPantherClient();
+        $credentials = $this->generateUser();
+
         $crawler = $client->request('GET', '/user/login');
 
         $form = $crawler->selectButton('Sign in')->form([
-            '_username' => 'testuser@example.com',
-            '_password' => 'SecurePass123',
+            '_username' => $credentials['email'],
+            '_password' => $credentials['password'],
         ]);
         $client->submit($form);
 
         $this->assertSelectorExists('.welcome-message');
     }
+
 
     /**
      * @throws NoSuchElementException
@@ -55,11 +65,13 @@ class FlowTest extends PantherTestCase
     public function testUserStartsANewQuestCompletesItAndLogsOut(): void
     {
         $client = static::createPantherClient();
+        $credentials = $this->generateUser();
+
         $crawler = $client->request('GET', '/user/login');
 
         $form = $crawler->selectButton('Sign in')->form([
-            '_username' => 'testuser@example.com',
-            '_password' => 'SecurePass123',
+            '_username' => $credentials['email'],
+            '_password' => $credentials['password'],
         ]);
         $client->submit($form);
 
@@ -94,6 +106,8 @@ class FlowTest extends PantherTestCase
         $client->waitFor('h1');
         $this->assertSelectorTextContains('h1', 'Please sign in');
     }
-
-
+    public static function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+    }
 }

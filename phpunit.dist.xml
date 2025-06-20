@@ -34,6 +34,8 @@
         <exclude>
             <directory>src/DataFixtures</directory>
             <directory>src/Exception</directory>
+            <directory>src/Controller/Test</directory>
+
         </exclude>
 
         <deprecationTrigger>
