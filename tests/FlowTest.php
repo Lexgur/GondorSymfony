@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\TimeoutException;
@@ -12,9 +11,9 @@ use Symfony\Component\Panther\PantherTestCase;
 
 class FlowTest extends PantherTestCase
 {
-
     /**
-     * @throws Exception
+     * @throws NoSuchElementException
+     * @throws TimeoutException
      */
     public function generateUser(): array
     {
@@ -124,23 +123,5 @@ class FlowTest extends PantherTestCase
         $client->clickLink('Logout');
         $client->waitFor('h1');
         $this->assertSelectorTextContains('h1', 'Please sign in');
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
-
-        self::bootKernel();
-        $container = self::$kernel->getContainer();
-
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
-
-        $em->getConnection()->executeStatement('DELETE FROM challenge_exercise');
-        $em->getConnection()->executeStatement('DELETE FROM challenge');
-        $em->getConnection()->executeStatement('DELETE FROM user');
     }
 }
