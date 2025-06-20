@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SqliteSchemaManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Exception;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\TimeoutException;
@@ -36,6 +40,25 @@ class FlowTest extends PantherTestCase
         return ['email' => $email, 'password' => $password];
     }
 
+    /**
+     * @throws NoSuchElementException
+     * @throws TimeoutException
+     */
+    public function testUserClicksAround(): void
+    {
+        $client = static::createPantherClient();
+        $client->request('GET', '/user/register');
+
+        $client->waitFor('nav');
+        $client->clickLink('Login');
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains('h1', 'Please sign in');
+
+        $client->waitFor('nav');
+        $client->clickLink('Register');
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains('h1', 'REGISTER');
+    }
 
     /**
      * @throws Exception
@@ -55,7 +78,6 @@ class FlowTest extends PantherTestCase
 
         $this->assertSelectorExists('.welcome-message');
     }
-
 
     /**
      * @throws NoSuchElementException
@@ -106,8 +128,21 @@ class FlowTest extends PantherTestCase
         $client->waitFor('h1');
         $this->assertSelectorTextContains('h1', 'Please sign in');
     }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
+        self::bootKernel();
+
+        /** @var EntityManagerInterface $em */
+        $em = self::$kernel->getContainer()->get('doctrine')->getManager();
+        $conn = $em->getConnection();
+
+        $em->clear();
+        $conn->close();
     }
+
 }
