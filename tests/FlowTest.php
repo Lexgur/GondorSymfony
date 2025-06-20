@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
-use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Schema\SqliteSchemaManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use Exception;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Exception\TimeoutException;
@@ -135,14 +132,15 @@ class FlowTest extends PantherTestCase
     public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
+
         self::bootKernel();
+        $container = self::$kernel->getContainer();
 
-        /** @var EntityManagerInterface $em */
-        $em = self::$kernel->getContainer()->get('doctrine')->getManager();
-        $conn = $em->getConnection();
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
 
-        $em->clear();
-        $conn->close();
+        $em->getConnection()->executeStatement('DELETE FROM challenge_exercise');
+        $em->getConnection()->executeStatement('DELETE FROM challenge');
+        $em->getConnection()->executeStatement('DELETE FROM user');
     }
-
 }
