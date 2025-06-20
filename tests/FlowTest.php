@@ -11,23 +11,89 @@ use Symfony\Component\Panther\PantherTestCase;
 
 class FlowTest extends PantherTestCase
 {
+
+    /**
+     * @throws Exception
+     */
+    public function testUserCanRegister(): void
+    {
+        $client = static::createPantherClient();
+
+        $crawler = $client->request('GET', '/user/register');
+
+        $form = $crawler->selectButton('REGISTER')->form([
+            'email' => 'testuser@example.com',
+            'password' => 'SecurePass123',
+        ]);
+        $client->submit($form);
+
+        $client->waitFor('.success-message');
+
+        $this->assertSelectorTextContains('.success-message', 'Registration complete');
+    }
+
+
+    public function testUserCanLogin(): void
+    {
+        $client = static::createPantherClient();
+        $crawler = $client->request('GET', '/user/login');
+
+        $form = $crawler->selectButton('Sign in')->form([
+            '_username' => 'testuser@example.com',
+            '_password' => 'SecurePass123',
+        ]);
+        $client->submit($form);
+
+        $this->assertSelectorExists('.welcome-message');
+    }
+
     /**
      * @throws NoSuchElementException
      * @throws TimeoutException
      * @throws Exception
      */
-    public function testSomething(): void
+    public function testUserStartsANewQuestCompletesItAndLogsOut(): void
     {
         $client = static::createPantherClient();
-        $client->request('GET', '/user/register');
+        $crawler = $client->request('GET', '/user/login');
 
-        $this->assertSelectorTextContains('h1', 'REGISTER');
+        $form = $crawler->selectButton('Sign in')->form([
+            '_username' => 'testuser@example.com',
+            '_password' => 'SecurePass123',
+        ]);
+        $client->submit($form);
 
-        $client->clickLink('Login'); // This waits for navigation
+        $this->assertSelectorExists('.welcome-message');
+        $client->waitFor('.welcome-message h1');
 
-        $client->waitFor('form input[name="_username"]');
+        $client->clickLink('Begin Questing');
 
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains(
+            'h1',
+            'You have not completed a single quest? I know a man in white robes, that would be disappointed'
+        );
+
+        $client->clickLink('Start your first quest');
+
+        $client->waitFor('ul');
+        $this->assertPageTitleContains('Quest Started!');
+
+        $challengeForm = $crawler->selectButton('MARK AS DONE')->form([
+
+        ]);
+        $client->submit($challengeForm);
+        $client->waitFor('.welcome-message');
+        $this->assertSelectorTextContains('h2', 'List of completed quests, Gondorian:');
+        $client->clickLink('View');
+        $client->waitFor('ul');
+        $client->clickLink('Back');
+        $client->waitFor('.welcome-message');
+
+        $client->clickLink('Logout');
+        $client->waitFor('h1');
         $this->assertSelectorTextContains('h1', 'Please sign in');
     }
+
 
 }

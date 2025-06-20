@@ -150,7 +150,23 @@ button:hover,
 }
 
 .quest-button {
-    width: 50%;
+    font-family: 'Cinzel', serif;
+    text-decoration: none;
+    width: fit-content;
+    margin-top: 3rem;
+    margin-left: 33%;
+    background: linear-gradient(135deg, #0b0d12, #2a3a4f, #d3d3d3);
+    color: #ffffff;
+    border: none;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    align-content: center;
+    align-items: center;
+    display: block;
 }
 
 .quest-table th,
