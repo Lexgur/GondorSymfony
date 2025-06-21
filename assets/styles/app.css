@@ -31,6 +31,7 @@ body {
 
 /* White tree background */
 .form-container::before {
+    background-image: url('../images/whitetree.png');
     content: '';
     position: absolute;
     top: 0;
@@ -107,6 +108,36 @@ input[type="password"],
     border-radius: 10px;
     backdrop-filter: blur(4px);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.homepage-message {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    border-left: 6px solid #042637;
+    color: #ffffff;
+    font-size: 0.7em;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 1.2rem;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.homepage-about {
+    border-radius: 10px;
+    border-left: 6px solid #042637;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    font-style: italic;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 1.2rem;
+}
+
+.home-title {
+    margin-top: 50px;
+    text-align: center;
 }
 
 .user-message {
@@ -346,4 +377,8 @@ ul.todo-list li {
     font-weight: bold;
     color: #ffffff;
     font-size: 1rem;
+}
+
+.nav-icon {
+    margin-top: 3%;
 }
