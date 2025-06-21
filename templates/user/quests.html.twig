@@ -36,6 +36,6 @@
         {% else %}
             <p>No completed quests yet.</p>
         {% endif %}
-        <button class="quest-button" onclick="window.location.href='{{ quest }}';">Start your daily quest</button>
+        <a class="quest-button" href="{{ quest }}">Start your quest</a>
     </div>
 {% endblock %}
