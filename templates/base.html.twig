@@ -16,8 +16,11 @@
         <div class="navbar-content">
             <div class="nav-left">
                 {% if app.user %}
-                <a href="{{ path('app_dashboard') }}">🏠 Dashboard</a>
-                <a href="{{ path('app_quests') }}">🗺️ Quests</a>
+                    <a href="{{ path('app_home') }}"><img class="nav-icon" src="{{ asset('./images/house.png') }}">Home</a>
+                    <a href="{{ path('app_dashboard') }}"><img class="nav-icon" src="{{ asset('./images/dashboard.png') }}">Dashboard</a>
+                <a href="{{ path('app_quests') }}"><img class="nav-icon" src="{{ asset('/images/quest.png') }}">Quests</a>
+                    {% else %}
+                    <a href="{{ path('app_home') }}"><img class="nav-icon" src="{{ asset('./images/house.png') }}">Home</a>
                 {% endif %}
             </div>
             <div class="nav-right">
