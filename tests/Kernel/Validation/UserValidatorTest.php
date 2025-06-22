@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Kernel;
+namespace App\Tests\Kernel\Validation;
 
 use App\Validation\UserValidator;
 use PHPUnit\Framework\TestCase;

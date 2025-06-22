@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application;
+namespace App\Tests\Application\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;

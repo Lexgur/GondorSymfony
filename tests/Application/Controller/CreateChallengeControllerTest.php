@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application;
+namespace App\Tests\Application\Controller;
 
 use App\Entity\Exercise;
 use App\Entity\MuscleGroup;

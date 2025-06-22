@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application;
+namespace App\Tests\Application\Controller;
 
 use App\Entity\Challenge;
 use App\Entity\ChallengeExercise;

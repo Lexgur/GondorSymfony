@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Kernel;
+namespace App\Tests\Kernel\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -52,7 +52,7 @@ class UserRepositoryTest extends KernelTestCase
     {
         $this->expectException(UnsupportedUserException::class);
 
-        $badUser = new DummyUser();
+        $badUser = new \App\Tests\Kernel\DummyUser();
 
         $this->userRepository->upgradePassword($badUser, 'test');
     }
