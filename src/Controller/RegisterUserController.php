@@ -34,6 +34,12 @@ class RegisterUserController extends AbstractController
             $email = $request->request->get('email');
             $password = $request->request->get('password');
 
+            $existingUser = $this->userRepository->findOneByEmail($email);
+            if($existingUser) {
+                $this->addFlash('error', 'Email already in use');
+                return $this->redirectToRoute('register');
+            }
+
             if ($this->validator->validateEmail($email) && $this->validator->validatePassword($password)) {
                 $user = new User();
                 $user->setEmail($email);
@@ -42,10 +48,10 @@ class RegisterUserController extends AbstractController
                 $this->userRepository->save($user);
 
                 $this->addFlash('success', 'Registration complete');
-                return $this->redirectToRoute('register');
             } else {
                 $this->addFlash('error', 'Invalid email or password');
             }
+            return $this->redirectToRoute('register');
         }
         return $this->render('user/register.html.twig');
     }

@@ -6,16 +6,16 @@ namespace App\Validation;
 
 class UserValidator
 {
-    public function validateEmail(string $email): bool
+    public function validateEmail(?string $email): bool
     {
-        if  (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (empty($email)) {
             return false;
         }
 
-        return true;
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    public function validatePassword(string $password): bool
+    public function validatePassword(?string $password): bool
     {
         if (empty($password)) {
             return false;

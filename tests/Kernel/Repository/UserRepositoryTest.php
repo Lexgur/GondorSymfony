@@ -52,7 +52,7 @@ class UserRepositoryTest extends KernelTestCase
     {
         $this->expectException(UnsupportedUserException::class);
 
-        $badUser = new \App\Tests\Kernel\DummyUser();
+        $badUser = new DummyUser();
 
         $this->userRepository->upgradePassword($badUser, 'test');
     }

@@ -30,6 +30,12 @@ class UserValidatorTest extends TestCase
         $this->assertFalse($this->validator->validateEmail($email));
     }
 
+    public function testEmptyEmailDoesNotPassValidation(): void
+    {
+        $email = '';
+        $this->assertFalse($this->validator->validateEmail($email));
+    }
+
     public function testPasswordValidationReturnsTrueWhenAnyStringIsGiven(): void
     {
         $this->assertTrue($this->validator->validatePassword('test'));
