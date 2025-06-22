@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests;
+namespace App\Tests\Kernel;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
