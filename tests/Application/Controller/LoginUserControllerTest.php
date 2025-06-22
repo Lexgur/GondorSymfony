@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Tests;
+namespace App\Tests\Application\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class WeaklingControllerTest extends WebTestCase
+class LoginUserControllerTest extends WebTestCase
 {
-    public function testSuccessfulRedirectionToWeaklingController(): void
+    public function testSuccessfulLogin(): void
     {
         $client = static::createClient();
 
@@ -33,10 +33,35 @@ class WeaklingControllerTest extends WebTestCase
 
         $client->followRedirect();
 
-        $client->request('GET',  '/user/weakling');
-        $this->assertSelectorTextContains('h1', 'You have not completed a single quest? I know a man in white robes, that would be disappointed');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Greetings');
+    }
+
+    public function testSuccessfulLogout(): void
+    {
+        $client = static::createClient();
+
+        $email = 'test@example.com';
+        $password = 'test';
+
+        $this->createTestUser($email, $password);
+
+        $crawler = $client->request('GET', '/user/login');
+        $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+
+        $client->submitForm('Sign in', [
+            '_username' => $email,
+            '_password' => $password,
+            '_csrf_token' => $csrfToken,
+        ]);
+        $client->request('GET', '/logout');
+
+        $this->assertResponseRedirects('/user/login');
+        $client->followRedirect();
+        $this->assertSelectorTextContains('h1', 'Please sign in');
 
     }
+
 
     private function createTestUser(string $email, string $plainPassword): void
     {
