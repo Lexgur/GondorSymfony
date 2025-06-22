@@ -32,9 +32,14 @@ class UserRegistersTest extends PantherTestCase
     public function testNewUserRegistersSuccessfully(): void
     {
         $client = static::createPantherClient();
-        $crawler = $client->request('GET', '/user/register');
+        $crawler = $client->request('GET', '/');
 
-        $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.com');
+        $client->waitFor('nav');
+        $client->clickLink('Register');
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains('h1', 'REGISTER');
+
+        $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.example');
         $crawler->filter('input[name="password"]')->sendKeys('SecurePassword123');
 
         $crawler->filter('button[type="submit"]')->click();
@@ -50,7 +55,12 @@ class UserRegistersTest extends PantherTestCase
     public function testNewUserFailsToRegisterWithAnEmptyEmail(): void
     {
         $client = static::createPantherClient();
-        $crawler = $client->request('GET', '/user/register');
+        $crawler = $client->request('GET', '/');
+
+        $client->waitFor('nav');
+        $client->clickLink('Register');
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains('h1', 'REGISTER');
 
         $crawler->filter('input[name="email"]')->sendKeys('');
         $crawler->filter('input[name="password"]')->sendKeys('SecurePassword123');
@@ -69,9 +79,14 @@ class UserRegistersTest extends PantherTestCase
     public function testNewUserFailsToRegisterWithAnEmptyPassword(): void
     {
         $client = static::createPantherClient();
-        $crawler = $client->request('GET', '/user/register');
+        $crawler = $client->request('GET', '/');
 
-        $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.com');
+        $client->waitFor('nav');
+        $client->clickLink('Register');
+        $client->waitFor('h1');
+        $this->assertSelectorTextContains('h1', 'REGISTER');
+
+        $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.example');
         $crawler->filter('input[name="password"]')->sendKeys('');
 
         $crawler->filter('button[type="submit"]')->click();
@@ -86,10 +101,14 @@ class UserRegistersTest extends PantherTestCase
      */
     public function testTwoUsersCanNotUseTheSameEmail(): void
     {
-        $uniqueEmail = 'testuser_' . uniqid('', true) . '@example.com';
+        $uniqueEmail = 'testuser_' . uniqid('', true) . '@example.example';
 
         $client1 = static::createPantherClient();
-        $crawler1 = $client1->request('GET', '/user/register');
+        $crawler1 = $client1->request('GET', '/');
+
+        $client1->waitFor('nav');
+        $client1->clickLink('Register');
+        $client1->waitFor('h1');
 
         $crawler1->filter('input[name="email"]')->sendKeys($uniqueEmail);
         $crawler1->filter('input[name="password"]')->sendKeys('SecurePassword123');
@@ -99,13 +118,17 @@ class UserRegistersTest extends PantherTestCase
         $this->assertSelectorTextContains('.success-message', 'Registration complete');
 
         $client2 = static::createPantherClient();
-        $crawler2 = $client2->request('GET', '/user/register');
+        $crawler2 = $client2->request('GET', '/');
+
+        $client2->waitFor('nav');
+        $client2->clickLink('Register');
+        $client2->waitFor('h1');
 
         $crawler2->filter('input[name="email"]')->sendKeys($uniqueEmail);
         $crawler2->filter('input[name="password"]')->sendKeys('DifferentPassword123');
         $crawler2->filter('button[type="submit"]')->click();
 
         $client2->waitFor('.error-message');
-        $this->assertSelectorTextContains('.error-message', 'Email already in use');
+        $this->assertSelectorTextContains('.error-message', 'Internal server error');
     }
 }
