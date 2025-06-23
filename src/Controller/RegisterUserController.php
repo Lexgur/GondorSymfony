@@ -29,11 +29,11 @@ class RegisterUserController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
-            $plainPassword = $request->request->get('password');
+            $plainPassword = $request->request->get('plainPassword');
 
             $existingUser = $this->userRepository->findOneByEmail($email);
             if ($existingUser) {
-                $this->addFlash('error', 'Email already in use.');
+                $this->addFlash('error', 'Internal server error.');
                 return $this->redirectToRoute('register');
             }
 

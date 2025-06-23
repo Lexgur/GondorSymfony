@@ -22,7 +22,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank(message: 'The email is required')]
-    #[Assert\Email(message: 'The email address must be a valid email address.')]
+    #[Assert\Email(message: 'The email must be a valid email address.')]
     private ?string $email = null;
 
     /**
@@ -42,9 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Not stored in the database.
      */
     #[Assert\NotBlank(message: 'The password is required')]
-    #[Assert\PasswordStrength(
-        message: 'Your password is too weak, try adding characters to it, upper and lower case letters'
-    )]
     private ?string $plainPassword = null;
 
     public function getId(): ?int
