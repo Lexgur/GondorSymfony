@@ -8,6 +8,7 @@
 /vendor/
 /coverage-report/
 /drivers/
+/drivers/geckodriver
 .idea
 .env.dev
 ###< symfony/framework-bundle ###
@@ -23,5 +24,4 @@
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
-/phpunit.xml
 ###< symfony/phpunit-bridge ###
