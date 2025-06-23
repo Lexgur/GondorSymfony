@@ -3,33 +3,16 @@ services:
     image: wodby/php:$PHP_TAG
     container_name: "${PROJECT_NAME}_php"
     environment:
-      # By default xdebug extension also disabled.
       PHP_EXTENSIONS_DISABLE: xhprof,spx
       PHP_MAIL_MIXED_LF_AND_CRLF: 'On'
-      # Mailpit:
       MSMTP_HOST: mailpit
       MSMTP_PORT: 1025
-      # OpenSMTPD:
-      # MSMTP_HOST: opensmtpd
-      # MSMTP_PORT: 25
-      DB_HOST: $DB_HOST
-      DB_USER: $DB_USER
-      DB_PASSWORD: $DB_PASSWORD
-      DB_NAME: $DB_NAME
       PHP_FPM_USER: wodby
       PHP_FPM_GROUP: wodby
-    ## Read instructions at https://wodby.com/docs/stacks/php/local/#xdebug
-    # PHP_XDEBUG_MODE: debug
-    # PHP_XDEBUG_MODE: profile
-    # PHP_XDEBUG_USE_COMPRESSION: false
-    # PHP_IDE_CONFIG: serverName=my-ide
-    # PHP_XDEBUG_IDEKEY: "my-ide"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/html:cached
-    # For XHProf and Xdebug profiler traces
-    # - files:/mnt/files
 
   nginx:
     image: wodby/nginx:$NGINX_TAG
@@ -56,22 +39,3 @@ services:
       # - '8080:8080' # Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-  ###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-  ###< doctrine/doctrine-bundle ###
