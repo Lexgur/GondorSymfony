@@ -48,7 +48,7 @@ readonly class ChallengeCreatorService
         return $this->fetcher->fetchRandomExercise($muscleGroupRotation);
     }
 
-    public function createChallengeForUser(User $user): Challenge
+    private function createChallengeForUser(User $user): Challenge
     {
         $challenge = new Challenge();
         $challenge->setUser($user);
