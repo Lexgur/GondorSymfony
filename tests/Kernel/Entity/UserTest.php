@@ -25,4 +25,12 @@ class UserTest extends TestCase
 
         $this->assertEquals('test@test.com', $this->user->getEmail());
     }
+
+    public function testGetPlainPassword(): void
+    {
+        $this->user = new User();
+        $this->user->setPlainPassword('test');
+
+        $this->assertEquals('test', $this->user->getPlainPassword());
+    }
 }

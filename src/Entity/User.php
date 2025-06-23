@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -20,6 +21,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'The email is required')]
+    #[Assert\Email(message: 'The email must be a valid email address.')]
     private ?string $email = null;
 
     /**
@@ -29,10 +32,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * The hashed password (stored in the database).
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * The plain password used for validation and password hashing.
+     * Not stored in the database.
+     */
+    #[Assert\NotBlank(message: 'The password is required')]
+    private ?string $plainPassword = null;
 
     public function getId(): ?int
     {
@@ -47,27 +57,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -79,32 +79,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $hashedPassword): static
     {
-        $this->password = $password;
-
+        $this->password = $hashedPassword;
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    #[CodeCoverageIgnore] #[\Deprecated]
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+    }
+
+    #[CodeCoverageIgnore]
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 }

@@ -23,11 +23,11 @@ class RegisterUserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $email = 'test@test.test';
-        $password = 'test';
+        $password = 'TesT1234@';
 
         $client->request('POST', '/user/register', [
             'email' => $email,
-            'password' => $password,
+            'plainPassword' => $password,
         ]);
 
         $this->assertResponseRedirects('/user/register');
@@ -40,15 +40,40 @@ class RegisterUserControllerTest extends WebTestCase
     public function testBadValuesShowErrorOnRegistrationPage(): void
     {
         $client = static::createClient();
-
-        $badEmail = 'test.test';
-        $password = 'test';
+        $password = 'test123';
 
         $client->request('POST', '/user/register', [
-            'email' => $badEmail,
-            'password' => $password,
+            'email' => '',
+            'plainPassword' => $password,
         ]);
 
-        $this->assertSelectorTextContains('.error-message', 'Invalid email or password');
+        $this->assertResponseRedirects('/user/register');
+
+        $client->followRedirect();
+
+        $this->assertSelectorTextContains('.error-message', 'The email is required');
     }
+
+    public function testTwoIdenticalEmailsAreNotAllowed(): void
+    {
+        $client = static::createClient();
+        $password = 'test123';
+
+        $client->request('POST', '/user/register', [
+            'email' => 'test1@test.test',
+            'plainPassword' => $password,
+        ]);
+
+        $client->request('POST', '/user/register', [
+            'email' => 'test1@test.test',
+            'plainPassword' => $password,
+        ]);
+
+        $this->assertResponseRedirects('/user/register');
+
+        $client->followRedirect();
+
+        $this->assertSelectorTextContains('.error-message', 'Internal server error.');
+    }
+
 }

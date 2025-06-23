@@ -40,7 +40,7 @@ class UserRegistersTest extends PantherTestCase
         $this->assertSelectorTextContains('h1', 'REGISTER');
 
         $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.example');
-        $crawler->filter('input[name="password"]')->sendKeys('SecurePassword123');
+        $crawler->filter('input[name="plainPassword"]')->sendKeys('SecurePassword123');
 
         $crawler->filter('button[type="submit"]')->click();
 
@@ -63,13 +63,13 @@ class UserRegistersTest extends PantherTestCase
         $this->assertSelectorTextContains('h1', 'REGISTER');
 
         $crawler->filter('input[name="email"]')->sendKeys('');
-        $crawler->filter('input[name="password"]')->sendKeys('SecurePassword123');
+        $crawler->filter('input[name="plainPassword"]')->sendKeys('SecurePassword123');
 
         $crawler->filter('button[type="submit"]')->click();
 
         $client->waitFor('.error-message');
 
-        $this->assertSelectorTextContains('.error-message', 'Invalid email or password');
+        $this->assertSelectorTextContains('.error-message', 'The email is required');
     }
 
     /**
@@ -87,13 +87,13 @@ class UserRegistersTest extends PantherTestCase
         $this->assertSelectorTextContains('h1', 'REGISTER');
 
         $crawler->filter('input[name="email"]')->sendKeys('newuser'. uniqid() . '@example.example');
-        $crawler->filter('input[name="password"]')->sendKeys('');
+        $crawler->filter('input[name="plainPassword"]')->sendKeys('');
 
         $crawler->filter('button[type="submit"]')->click();
 
         $client->waitFor('.error-message');
 
-        $this->assertSelectorTextContains('.error-message', 'Invalid email or password');
+        $this->assertSelectorTextContains('.error-message', 'The password is required');
     }
 
     /**
@@ -111,7 +111,7 @@ class UserRegistersTest extends PantherTestCase
         $client1->waitFor('h1');
 
         $crawler1->filter('input[name="email"]')->sendKeys($uniqueEmail);
-        $crawler1->filter('input[name="password"]')->sendKeys('SecurePassword123');
+        $crawler1->filter('input[name="plainPassword"]')->sendKeys('SecurePassword123');
         $crawler1->filter('button[type="submit"]')->click();
 
         $client1->waitFor('.success-message');
@@ -125,10 +125,10 @@ class UserRegistersTest extends PantherTestCase
         $client2->waitFor('h1');
 
         $crawler2->filter('input[name="email"]')->sendKeys($uniqueEmail);
-        $crawler2->filter('input[name="password"]')->sendKeys('DifferentPassword123');
+        $crawler2->filter('input[name="plainPassword"]')->sendKeys('DifferentPassword123');
         $crawler2->filter('button[type="submit"]')->click();
 
         $client2->waitFor('.error-message');
-        $this->assertSelectorTextContains('.error-message', 'Internal server error');
+        $this->assertSelectorTextContains('.error-message', 'Internal server error.');
     }
 }
