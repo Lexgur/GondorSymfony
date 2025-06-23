@@ -6,53 +6,57 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Validation\UserValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegisterUserController extends AbstractController
 {
     private UserRepository $userRepository;
     private UserPasswordHasherInterface $passwordHasher;
 
-    private UserValidator $validator;
-
-    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, UserValidator $validator)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository)
     {
         $this->passwordHasher = $passwordHasher;
         $this->userRepository = $userRepository;
-        $this->validator = $validator;
     }
 
     #[Route('/user/register', name: 'register')]
-    public function index(Request $request): Response
+    public function index(Request $request, ValidatorInterface $validator): Response
     {
-        if($request->getMethod() === 'POST') {
+        if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
-            $password = $request->request->get('password');
+            $plainPassword = $request->request->get('password');
 
             $existingUser = $this->userRepository->findOneByEmail($email);
-            if($existingUser) {
-                $this->addFlash('error', 'Internal server error');
+            if ($existingUser) {
+                $this->addFlash('error', 'Email already in use.');
                 return $this->redirectToRoute('register');
             }
 
-            if ($this->validator->validateEmail($email) && $this->validator->validatePassword($password)) {
-                $user = new User();
-                $user->setEmail($email);
-                $user->setPassword($this->passwordHasher->hashPassword($user, $password));
+            $user = new User();
+            $user->setEmail($email);
+            $user->setPlainPassword($plainPassword);
 
-                $this->userRepository->save($user);
-
-                $this->addFlash('success', 'Registration complete');
-            } else {
-                $this->addFlash('error', 'Invalid email or password');
+            $errors = $validator->validate($user);
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+                return $this->redirectToRoute('register');
             }
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+
+            $this->userRepository->save($user);
+            $this->addFlash('success', 'Registration complete');
+
             return $this->redirectToRoute('register');
         }
+
         return $this->render('user/register.html.twig');
     }
 }
