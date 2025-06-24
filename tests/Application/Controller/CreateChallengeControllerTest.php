@@ -8,6 +8,7 @@ use App\Entity\Exercise;
 use App\Entity\MuscleGroup;
 use App\Entity\User;
 use App\Service\ChallengeCreatorService;
+use App\Service\RandomExerciseFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -74,10 +75,10 @@ class CreateChallengeControllerTest extends WebTestCase
         $session = $this->client->getRequest()->getSession();
 
         $container = static::getContainer();
-        /** @var ChallengeCreatorService $fetcher */
-        $fetcher = $container->get(ChallengeCreatorService::class);
-        $exercises = $fetcher->fetchExercisesForChallenge();
-
+        /** @var ChallengeCreatorService $challengeCreator */
+        $challengeCreator = $container->get(ChallengeCreatorService::class);
+        $fetcher = $container->get(RandomExerciseFetcher::class);
+        $exercises = $fetcher->fetchRandomExercise();
         $exerciseIds = array_map(fn($e) => $e->getId(), $exercises);
 
         $session->set('challenge_exercise_ids', $exerciseIds);
@@ -112,8 +113,8 @@ class CreateChallengeControllerTest extends WebTestCase
         $session = $this->client->getRequest()->getSession();
 
         $container = static::getContainer();
-        $fetcher = $container->get(ChallengeCreatorService::class);
-        $exercises = $fetcher->fetchExercisesForChallenge();
+        $fetcher = $container->get(RandomExerciseFetcher::class);
+        $exercises = $fetcher->fetchRandomExercise();
         $exerciseIds = array_map(fn($e) => $e->getId(), $exercises);
 
         $session->set('challenge_exercise_ids', $exerciseIds);
@@ -132,9 +133,9 @@ class CreateChallengeControllerTest extends WebTestCase
         $session = $this->client->getRequest()->getSession();
 
         $container = static::getContainer();
-        $fetcher = $container->get(ChallengeCreatorService::class);
+        $fetcher = $container->get(RandomExerciseFetcher::class);
 
-        $exercises = $fetcher->fetchExercisesForChallenge();
+        $exercises = $fetcher->fetchRandomExercise();
         $exerciseIds = array_map(fn($e) => $e->getId(), $exercises);
 
         $session->set('challenge_exercise_ids', $exerciseIds);

@@ -9,12 +9,12 @@ use App\Repository\ChallengeRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\UserRepository;
 use App\Service\ChallengeCreatorService;
+use App\Service\RandomExerciseFetcher;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class CreateChallengeController extends AbstractController
@@ -24,17 +24,21 @@ class CreateChallengeController extends AbstractController
     private UserRepository $userRepository;
     private ExerciseRepository $exerciseRepository;
 
+    private RandomExerciseFetcher $fetcher;
+
     public function __construct(
         ChallengeCreatorService $challengeCreator,
         ChallengeRepository     $challengeRepository,
         UserRepository          $userRepository,
-        ExerciseRepository      $exerciseRepository
+        ExerciseRepository      $exerciseRepository,
+        RandomExerciseFetcher $fetcher
     )
     {
         $this->challengeCreator = $challengeCreator;
         $this->challengeRepository = $challengeRepository;
         $this->userRepository = $userRepository;
         $this->exerciseRepository = $exerciseRepository;
+        $this->fetcher = $fetcher;
     }
 
     /**
@@ -84,7 +88,7 @@ class CreateChallengeController extends AbstractController
 
 
         if (!$session->has('challenge_exercise_ids')) {
-            $exercises = $this->challengeCreator->fetchExercisesForChallenge();
+            $exercises = $this->fetcher->fetchRandomExercise();
             $session->set('challenge_exercise_ids', array_map(fn($e) => $e->getId(), $exercises));
         } else {
             $exerciseIds = $session->get('challenge_exercise_ids');

@@ -22,8 +22,12 @@ readonly class ChallengeCreatorService
      */
     public function createChallenge(User $user, ?int $muscleGroupRotation = null): Challenge
     {
-        // Create and persist the Challenge
-        $challenge = $this->createChallengeForUser($user);
+        $challenge = new Challenge();
+        $challenge->setUser($user);
+        $challenge->setStartedAt(new \DateTimeImmutable());
+
+        $this->entityManager->persist($challenge);
+        $this->entityManager->flush();
 
         // Fetch random exercises
         $exercises = $this->fetcher->fetchRandomExercise($muscleGroupRotation);
@@ -35,27 +39,6 @@ readonly class ChallengeCreatorService
             $challengeExercise->setCompleted(false);
             $challenge->addChallengeExercise($challengeExercise);
         }
-
-        return $challenge;
-    }
-
-
-    /**
-     * @throws RandomException
-     */
-    public function fetchExercisesForChallenge(?int $muscleGroupRotation = null): array
-    {
-        return $this->fetcher->fetchRandomExercise($muscleGroupRotation);
-    }
-
-    private function createChallengeForUser(User $user): Challenge
-    {
-        $challenge = new Challenge();
-        $challenge->setUser($user);
-        $challenge->setStartedAt(new \DateTimeImmutable());
-
-        $this->entityManager->persist($challenge);
-        $this->entityManager->flush();
 
         return $challenge;
     }
