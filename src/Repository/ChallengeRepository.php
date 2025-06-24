@@ -17,20 +17,6 @@ class ChallengeRepository extends ServiceEntityRepository
         parent::__construct($registry, Challenge::class);
     }
 
-    public function save(Challenge $challenge): Challenge
-    {
-        $this->getEntityManager()->persist($challenge);
-        $this->getEntityManager()->flush();
-
-        return $challenge;
-    }
-
-    public function remove(Challenge $challenge): void
-    {
-        $this->getEntityManager()->remove($challenge);
-        $this->getEntityManager()->flush();
-    }
-
     public function findOneById($id): ?Challenge
     {
         return $this->findOneBy(['id' => $id]);

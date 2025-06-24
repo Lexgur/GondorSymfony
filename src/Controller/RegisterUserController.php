@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +16,16 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegisterUserController extends AbstractController
 {
-    private UserRepository $userRepository;
+    private UserService $userService;
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository)
+    private UserRepository $userRepository;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher, UserService $userService, UserRepository $userRepository)
     {
-        $this->passwordHasher = $passwordHasher;
         $this->userRepository = $userRepository;
+        $this->passwordHasher = $passwordHasher;
+        $this->userService = $userService;
     }
 
     #[Route('/user/register', name: 'register')]
@@ -51,7 +55,7 @@ class RegisterUserController extends AbstractController
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
 
-            $this->userRepository->save($user);
+            $this->userService->save($user);
             $this->addFlash('success', 'Registration complete');
 
             return $this->redirectToRoute('register');

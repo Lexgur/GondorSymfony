@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ChallengeRepository;
+use App\Service\ChallengeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,13 @@ class ViewChallengeController extends AbstractController
 {
     private ChallengeRepository $challengeRepository;
 
+    private ChallengeService $challengeService;
 
-    public function __construct(ChallengeRepository $challengeRepository)
+
+    public function __construct(ChallengeRepository $challengeRepository, ChallengeService $challengeService)
     {
         $this->challengeRepository = $challengeRepository;
+        $this->challengeService = $challengeService;
     }
 
     #[Route('/quest/view/{id}', name: 'quest_view')]
@@ -49,7 +53,7 @@ class ViewChallengeController extends AbstractController
 
         if ($completedCount === $totalCount && !$challenge->getCompletedAt()) {
             $challenge->setCompletedAt(new \DateTimeImmutable());
-            $this->challengeRepository->save($challenge);
+            $this->challengeService->save($challenge);
         }
 
         return $this->render('quest/view.html.twig', [
