@@ -9,6 +9,8 @@
 /coverage-report/
 /drivers/
 /drivers/geckodriver
+chromedriver
+geckodriver
 .idea
 .env.dev
 ###< symfony/framework-bundle ###
