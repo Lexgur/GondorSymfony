@@ -24,7 +24,7 @@ class QuestsControllerTest extends WebTestCase
         $user = $this->createTestUser();
 
         $challengeCreator = $container->get(ChallengeCreatorService::class);
-        $challenge = $challengeCreator->createChallengeForUser($user);
+        $challenge = $challengeCreator->createChallenge($user);
         $challenge->setStartedAt(new \DateTimeImmutable('2025-01-01 10:00'));
         $challenge->setCompletedAt(new \DateTimeImmutable('2025-01-01 12:00'));
 

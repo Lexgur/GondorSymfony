@@ -35,7 +35,6 @@ class ViewChallengeControllerTest extends WebTestCase
         $this->createTestExercises();
 
         $this->testUser = $this->em->getRepository(User::class)->findOneBy(['email' => 'test@example.com']);
-        $this->testExercises = $this->em->getRepository(Exercise::class)->findBy([], null, 2);
     }
 
     public function testViewChallengeNotFoundThrowsException(): void
@@ -58,7 +57,7 @@ class ViewChallengeControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $this->assertStringContainsString(
-            'You’ve completed 1 out of 2 exercises',
+            'You’ve completed 1 out of 2 exercises.',
             $crawler->filter('p.in-progress-message')->text()
         );
 
@@ -124,10 +123,12 @@ class ViewChallengeControllerTest extends WebTestCase
         $this->loginUser();
         $this->client->followRedirect();
 
-        $crawler = $this->client->request('GET', '/quest/view/' . $challenge->getId());
+        $challengeId =  $challenge->getId();
+
+        $crawler = $this->client->request('GET', '/quest/view/' . $challengeId);
         $this->assertResponseIsSuccessful();
 
-        $updatedChallenge = $this->em->getRepository(Challenge::class)->find($challenge->getId());
+        $updatedChallenge = $this->em->getRepository(Challenge::class)->findOneBy(['id' => $challenge->getId()]);
         $this->assertNotNull($updatedChallenge->getCompletedAt(), 'Challenge should be marked as completed.');
 
         $this->assertStringContainsString(
@@ -178,6 +179,7 @@ class ViewChallengeControllerTest extends WebTestCase
     private function createTestExercises(): void
     {
         $muscleGroups = [MuscleGroup::CORE, MuscleGroup::BACK];
+        $this->testExercises = [];
 
         foreach ($muscleGroups as $group) {
             $exercise = new Exercise();
@@ -185,10 +187,13 @@ class ViewChallengeControllerTest extends WebTestCase
             $exercise->setDescription("Description");
             $exercise->setMuscleGroup($group);
             $this->em->persist($exercise);
+
+            $this->testExercises[] = $exercise;
         }
 
         $this->em->flush();
     }
+
 
     private function loginUser(): void
     {

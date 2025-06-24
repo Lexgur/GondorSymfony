@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\ChallengeExercise;
-use App\Repository\ChallengeRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\UserRepository;
 use App\Service\ChallengeCreatorService;
+use App\Service\ChallengeService;
 use App\Service\RandomExerciseFetcher;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class CreateChallengeController extends AbstractController
 {
     private ChallengeCreatorService $challengeCreator;
-    private ChallengeRepository $challengeRepository;
+    private ChallengeService $challengeService;
     private UserRepository $userRepository;
     private ExerciseRepository $exerciseRepository;
 
@@ -28,14 +28,14 @@ class CreateChallengeController extends AbstractController
 
     public function __construct(
         ChallengeCreatorService $challengeCreator,
-        ChallengeRepository     $challengeRepository,
+        ChallengeService     $challengeService,
         UserRepository          $userRepository,
         ExerciseRepository      $exerciseRepository,
         RandomExerciseFetcher $fetcher
     )
     {
         $this->challengeCreator = $challengeCreator;
-        $this->challengeRepository = $challengeRepository;
+        $this->challengeService = $challengeService;
         $this->userRepository = $userRepository;
         $this->exerciseRepository = $exerciseRepository;
         $this->fetcher = $fetcher;
@@ -78,7 +78,7 @@ class CreateChallengeController extends AbstractController
             $challenge->setStartedAt(new \DateTimeImmutable());
             $challenge->setCompletedAt(new \DateTimeImmutable());
 
-            $this->challengeRepository->save($challenge);
+            $this->challengeService->save($challenge);
 
             $session->remove('challenge_exercise_ids');
 

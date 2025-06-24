@@ -17,20 +17,6 @@ class ExerciseRepository extends ServiceEntityRepository
         parent::__construct($registry, Exercise::class);
     }
 
-    public function save(Exercise $exercise): Exercise
-    {
-        $this->getEntityManager()->persist($exercise);
-        $this->getEntityManager()->flush();
-
-        return $exercise;
-    }
-
-    public function remove(Exercise $exercise): void
-    {
-        $this->getEntityManager()->remove($exercise);
-        $this->getEntityManager()->flush();
-    }
-
     public function findOneById($id): ?Exercise
     {
         return $this->findOneBy(['id' => $id]);
